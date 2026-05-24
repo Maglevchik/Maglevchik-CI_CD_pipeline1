@@ -12,30 +12,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # Твое Django-приложение (API для ботов)
   web:
-    build: .
-    # Когда будем деплоить, заменим build на image из GitHub,
-    # но пока оставляем так для локальной проверки
+    # Сервер больше не собирает код, а качает готовую "коробку" из твоего GitHub
+    image: ghcr.io/maglevchik/maglevchik-ci_cd_pipeline1:latest
+    container_name: django_app
     restart: always
-    command: gunicorn --bind 0.0.0.0:8000 bot_builder.wsgi:application
-    volumes:
-      - .:/app
-      - static_volume:/app/static
     env_file:
       - .env
-    depends_on:
-      - db
+    # Порт 80 убрали отсюда, так как теперь его будет слушать Nginx
+    expose:
+      - "8000"
+    command: python manage.py runserver 0.0.0.0:8000
 
-  # Веб-сервер, который будет принимать запросы из интернета
   nginx:
-    image: nginx:alpine
+    image: nginx:latest
+    container_name: nginx_proxy
     restart: always
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - static_volume:/app/static
+      # Подключаем файл настроек Nginx, который создадим в следующем шаге
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - web
 
