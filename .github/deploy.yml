@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+# Запускаем пайплайн при каждом пуше в основную ветку
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Download fresh code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2.Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3.(CI)
+      - name: Run tests
+        run: python -m unittest discover
+
+      # 4.(CD)
+      - name: Copy files to Selectel VPS
+        if: success() # Выполнится только если тесты прошли без ошибок
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/root/Maglevchik-CI_CD_pipeline1"
