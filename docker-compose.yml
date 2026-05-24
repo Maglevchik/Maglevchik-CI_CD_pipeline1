@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # Наша база данных PostgreSQL
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Твое Django-приложение (API для ботов)
+  web:
+    build: .
+    # Когда будем деплоить, заменим build на image из GitHub,
+    # но пока оставляем так для локальной проверки
+    restart: always
+    command: gunicorn --bind 0.0.0.0:8000 bot_builder.wsgi:application
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  # Веб-сервер, который будет принимать запросы из интернета
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/app/static
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
