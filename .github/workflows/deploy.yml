@@ -1,34 +1,40 @@
-name: CI/CD Pipeline with Docker Compose
+name: CI/CD Pipeline with GHCR
 
-# Запускаем пайплайн при каждом пуше в основную ветку
 on:
   push:
     branches:
       - main
       - master
 
+env:
+  REGISTRY: ghcr.io
+  # ВАЖНО: Замени maglevchik на твой реальный никнейм на GitHub (только маленькими буквами!)
+  IMAGE_NAME: maglevchik/maglevchik-ci_cd_pipeline1 
+
 jobs:
-  build_and_deploy:
+  build_and_push:
     runs-on: ubuntu-latest
+    # Даем GitHub Actions права на загрузку образов в твой реестр пакетов
+    permissions:
+      contents: read
+      packages: write 
 
     steps:
-      # 1. Скачиваем свежий код из репозитория
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Устанавливаем Python
+      # 1. Устанавливаем Python и нужные библиотеки
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
-      # Устанавливаем нужные библиотеки
+          
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      # 3. Запускаем тестирование (CI)
+          
+      # 2. Запускаем тесты с фиктивными переменными
       - name: Run tests
         env:
           DB_NAME: test_db
@@ -36,20 +42,44 @@ jobs:
           DB_PASSWORD: test_password
         run: python manage.py test
 
-      # 4. Отправляем проверенный код на VPS (CD - Копирование)
-      - name: Copy files to VPS
-        if: success() # Выполнится только если тесты прошли без ошибок
+      # 3. Авторизация в GitHub Container Registry (GHCR)
+      - name: Log in to the Container registry
+        if: success()
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Сборка и отправка готового образа в облако GitHub
+      - name: Build and push Docker image
+        if: success()
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_push # Деплоим только если образ успешно собрался и тесты пройдены
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 5. Копируем на сервер ТОЛЬКО конфигурации (сам код уже внутри образа)
+      - name: Copy docker-compose and nginx config to VPS
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
+          source: "docker-compose.yml,nginx.conf"
           target: "/root/Maglevchik-CI_CD_pipeline1"
 
-      # 5. Разворачиваем проект через Docker Compose (CD - Запуск)
-      - name: Deploy with Docker Compose
-        if: success()
+      # 6. Сервер скачивает готовый образ и запускает его
+      - name: Deploy on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -57,5 +87,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /root/Maglevchik-CI_CD_pipeline1
+            # Останавливаем старые контейнеры
             docker-compose down
-            docker-compose up -d --build
+            # Скачиваем новый готовый образ из GitHub
+            docker-compose pull
+            # Запускаем новую версию
+            docker-compose up -d
