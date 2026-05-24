@@ -30,7 +30,7 @@ jobs:
 
       # 3. Запускаем тестирование (CI)
       - name: Run tests
-        run: python -m unittest discover
+        run: python manage.py test
 
       # 4. Отправляем проверенный код на VPS (CD - Копирование)
       - name: Copy files to VPS
