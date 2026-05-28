@@ -2,10 +2,104 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Мой проект</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мир Электроники | Всё о компьютерном железе</title>
+    <!-- Подключаем стили Bootstrap через CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .hardware-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #0dcaf0;
+        }
+    </style>
 </head>
-<body>
-    <h1>Привет! Это мой сайт на Django</h1>
-    <p>Здесь скоро будет крутой интерфейс для бота.</p>
+<body class="bg-light">
+
+    <!-- Навигационная панель -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">💻 PC-Hardware</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Главная</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Статьи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Главный баннер -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Устройство современного компьютера</h1>
+            <p class="lead mt-3">Погрузитесь в мир транзисторов, микросхем и вычислительной мощности. Узнайте, как работает ваше "железо".</p>
+            <a href="#articles" class="btn btn-info btn-lg mt-4 text-white">Читать статьи</a>
+        </div>
+    </section>
+
+    <!-- Блок со статьями -->
+    <section id="articles" class="container my-5">
+        <h2 class="text-center mb-5">Основные компоненты</h2>
+        <div class="row g-4">
+            
+            <!-- Карточка 1: Процессоры -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center mt-3">
+                        <div class="hardware-icon">🧠</div>
+                        <h5 class="card-title fw-bold">Центральные процессоры (CPU)</h5>
+                        <p class="card-text text-muted">Мозг компьютера. Узнайте всё об архитектуре ядер, кэш-памяти и тактовых частотах современных камней от Intel и AMD.</p>
+                        <a href="#" class="btn btn-outline-dark mt-auto">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Карточка 2: Видеокарты -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center mt-3">
+                        <div class="hardware-icon">🎮</div>
+                        <h5 class="card-title fw-bold">Видеокарты (GPU)</h5>
+                        <p class="card-text text-muted">От обработки графики до обучения нейросетей. Разбираем устройство графических чипов и видеопамяти GDDR6.</p>
+                        <a href="#" class="btn btn-outline-dark mt-auto">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Карточка 3: Материнские платы -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center mt-3">
+                        <div class="hardware-icon">🔌</div>
+                        <h5 class="card-title fw-bold">Материнские платы</h5>
+                        <p class="card-text text-muted">Связующее звено всех систем. Изучаем чипсеты, цепи питания (VRM) и высокоскоростные шины передачи данных PCI Express.</p>
+                        <a href="#" class="btn btn-outline-dark mt-auto">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 Информационный портал об электронике. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Скрипты Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
