@@ -21,11 +21,11 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 1. Устанавливаем Python и нужные библиотеки
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           
@@ -45,7 +45,7 @@ jobs:
       # 3. Авторизация в GitHub Container Registry (GHCR)
       - name: Log in to the Container registry
         if: success()
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -54,7 +54,7 @@ jobs:
       # 4. Сборка и отправка готового образа в облако GitHub
       - name: Build and push Docker image
         if: success()
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true
