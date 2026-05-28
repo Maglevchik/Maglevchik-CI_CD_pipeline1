@@ -21,7 +21,7 @@
     </style>
 </head>
 <body class="bg-light">
-
+    
     <!-- Навигационная панель -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -47,6 +47,24 @@
             <a href="#articles" class="btn btn-info btn-lg mt-4 text-white">Читать статьи</a>
         </div>
     </section>
+
+    <!-- Блок с музыкой -->
+    {% for track in tracks %}
+    <div class="track-card p-3 mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between shadow-sm">
+    <div class="mb-3 mb-md-0">
+        <h5 class="mb-1 text-info">{{ track.title }}</h5>
+        <p class="mb-0 text-muted small">Исполнитель: {{ track.artist }}</p>
+    </div>
+    <div style="min-width: 300px;">
+        <audio controls preload="metadata">
+            <source src="{{ track.url }}" type="audio/mpeg">
+            Ваш браузер не поддерживает аудиоэлемент.
+        </audio>
+    </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">Плейлист пока пуст. Добавьте треки в админ-панели!</p>
+    {% endfor %}
 
     <!-- Блок со статьями -->
     <section id="articles" class="container my-5">

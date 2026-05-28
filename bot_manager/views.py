@@ -1,4 +1,7 @@
-from django.shortcuts import render # type: ignore
+from django.shortcuts import render
+from .models import Track
 
 def index(request):
-    return render(request, 'index.html')
+    # Достаем абсолютно все треки, которые ты добавишь через админку
+    tracks = Track.objects.all()
+    return render(request, 'index.html', {'tracks': tracks})
