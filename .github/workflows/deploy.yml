@@ -93,3 +93,7 @@ jobs:
             docker-compose pull
             # Запускаем новую версию
             docker-compose up -d
+            # Применяем миграции к базе данных
+            docker-compose exec -T web python manage.py migrate
+            # Собираем все картинки и стили в одну папку
+            docker-compose exec -T web python manage.py collectstatic --noinput
