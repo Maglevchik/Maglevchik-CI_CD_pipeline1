@@ -79,21 +79,21 @@ jobs:
           target: "/root/Maglevchik-CI_CD_pipeline1"
 
       # 6. Сервер скачивает готовый образ и запускает его
-      - name: Deploy on VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /root/Maglevchik-CI_CD_pipeline1
-            # Останавливаем старые контейнеры
-            docker-compose down
-            # Скачиваем новый готовый образ из GitHub
-            docker-compose pull
-            # Запускаем новую версию
-            docker-compose up -d
-            # Применяем миграции к базе данных
-            docker-compose exec -T web python manage.py migrate
-            # Собираем все картинки и стили в одну папку
-            docker-compose exec -T web python manage.py collectstatic --noinput
+#       - name: Deploy on VPS
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          script: |
+#            cd /root/Maglevchik-CI_CD_pipeline1
+#            # Останавливаем старые контейнеры
+#            docker-compose down
+#            # Скачиваем новый готовый образ из GitHub
+#            docker-compose pull
+#            # Запускаем новую версию
+#            docker-compose up -d
+#            # Применяем миграции к базе данных
+#            docker-compose exec -T web python manage.py migrate
+#            # Собираем все картинки и стили в одну папку
+#            docker-compose exec -T web python manage.py collectstatic --noinput
