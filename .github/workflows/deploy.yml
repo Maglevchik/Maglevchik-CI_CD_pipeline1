@@ -34,14 +34,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      # 2. Запускаем тесты с фиктивными переменными
+# 2. Запускаем тесты с фиктивными переменными
       - name: Run tests
         env:
           DB_NAME: test_db
           DB_USER: test_user
           DB_PASSWORD: test_password
-        run: python manage.py test
-
+        run: |
+          python manage.py makemigrations
+          python manage.py test
+          
       # 3. Авторизация в GitHub Container Registry (GHCR)
       - name: Log in to the Container registry
         if: success()
