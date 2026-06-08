@@ -22,7 +22,16 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+
+# GitHub Actions автоматически задает переменную окружения CI=true
+if os.environ.get('CI') == 'true':
+    # Временный фиктивный ключ только для прохождения тестов в GitHub
+    SECRET_KEY = 'dummy-secret-key-for-github-actions-tests'
+else:
+    # Здесь должен остаться твой оригинальный код для боевого сервера!
+    # Скорее всего, он выглядит примерно так:
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
