@@ -8,7 +8,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # ВАЖНО: Замени maglevchik на твой реальный никнейм на GitHub (только маленькими буквами!)
   IMAGE_NAME: maglevchik/maglevchik-ci_cd_pipeline1 
 
 jobs:
